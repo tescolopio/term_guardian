@@ -1,33 +1,52 @@
-const { sendTextForAnalysis } = require('../contentScript');
+/**
+ * Test suite for sendTextForAnalysis function in contentScript.js.
+ *
+ * This function is crucial for initiating the text analysis process by sending selected text
+ * to the background script. It needs to correctly handle the sending process, including formatting
+ * the message and handling any potential errors that might occur during message sending.
+ *
+ * Tests included:
+ * - Ensures that the text is sent correctly with the proper message structure.
+ * - Verifies that errors in the chrome.runtime.sendMessage function are handled gracefully.
+ */
 
 describe('sendTextForAnalysis', () => {
   beforeEach(() => {
-    // Reset and setup the mock before each test
-    jest.resetAllMocks();
+    jest.resetAllMocks(); // Reset all mocks before each test
     global.chrome = {
       runtime: {
-        sendMessage: jest.fn((message, callback) => {
-          callback({}); // Simulate a callback if needed
+        sendMessage: jest.fn((msg, callback) => {
+          if (msg.text === 'privacy policy') {
+            global.chrome.runtime.lastError = { message: 'Failed to send' };
+            callback();
+          } else {
+            callback({ success: true });
+            global.chrome.runtime.lastError = null;
+          }
         }),
         lastError: null
       }
     };
+    console.error = jest.fn();
   });
 
   afterEach(() => {
-    // Clean up if there's any specific teardown needed
-    jest.clearAllMocks();
+    global.chrome.runtime.lastError = null; // Ensure lastError is cleared after each test
   });
 
-  it('should send the text to the background script', () => {
-    // Arrange
-    const text = 'This is some text';
-    const expectedMessage = { action: 'analyzeText', text };
+  it('should send text to the background script for analysis', async () => {
+    const text = 'terms of service';
+    await sendTextForAnalysis(text);
+    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
+      action: "analyzeText",
+      text: text
+    }, expect.any(Function));
+  });
 
-    // Act
-    sendTextForAnalysis(text);
-
-    // Assert
-    expect(chrome.runtime.sendMessage).toHaveBeenCalledWith(expectedMessage, expect.any(Function));
+  it('should handle errors when sending message fails', async () => {
+    const text = 'privacy policy';
+    await sendTextForAnalysis(text);
+    expect(console.error).toHaveBeenCalledWith('Error sending message to background script:', 'Failed to send');
+    expect(chrome.runtime.sendMessage).toHaveBeenCalled();
   });
 });
