@@ -6,10 +6,11 @@ This guide outlines the steps to set up a testing environment using Jest and Bab
 - Node.js installed on your development machine.
 - An existing JavaScript project.
 
-## Step 1: Install Jest
+## Step 1: Install Jest & jsdom
 Jest is a delightful JavaScript Testing Framework focused on simplicity. To add Jest to your project, run:
 ```bash
 npm install --save-dev jest
+npm install --save-dev jest-environment-jsdom
 ```
 
 ## Step 2: Install Babel
