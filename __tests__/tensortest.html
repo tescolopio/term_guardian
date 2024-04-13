@@ -1,0 +1,42 @@
+<html>
+    <head>
+        <!--Load TensorFlow.js -->
+        <!-- TensorFlow.js is a library for machine learning in JavaScript -->
+        <!--Get latest version at https://github.com/tensorflow/tfjs -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@0.11.2"></script>
+    </head>
+    <body>
+        <div id="output_field"></div>
+        <!-- The output field where the prediction result will be displayed -->
+    </body>
+    <script>
+        /**
+         * Asynchronously trains a simple linear model using TensorFlow.js.
+         * 
+         * This function initializes a sequential model, adds a dense layer with a single unit,
+         * compiles the model with mean squared error loss and stochastic gradient descent optimizer.
+         * It then creates tensors for input (xs) and output (ys) data, fits the model to this data,
+         * and upon completion, uses the model to predict the output for a new data point and displays
+         * the result in the 'output_field' div.
+         */
+        async function learnLinear(){
+
+            const model = tf.sequential(); // Initialize a sequential model
+            model.add(tf.layers.dense({units: 1, inputShape: [1]})); // Add a dense layer
+            model.compile({
+                    loss:'meanSquaredError', // Set loss function
+                    optimizer: 'sgd' // Set optimizer
+            });
+
+            // Define input and output data
+            const xs = tf.tensor2d([-1, 0, 1, 2, 3, 4], [6, 1]);
+            const ys = tf.tensor2d([-3, -1, 1, 3, 5, 7], [6, 1]);
+            
+            await model.fit(xs, ys, {epochs: 500}); // Train the model
+
+            // Predict output for a new data point and update the output field
+            document.getElementById('output_field').innerText = model.predict(tf.tensor2d([10],[1,1]));
+        }
+        learnLinear(); // Call the function to start the learning process
+    </script>
+</html>
