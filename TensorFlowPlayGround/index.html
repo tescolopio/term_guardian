@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Terms Guardian TensorFlow.js Project</title>
+</head>
+<body>
+ <h1>Terms Guardian TensorFlow.js Project</h1>
+    <div>
+        <label for="inputValue">Enter Input:</label>
+    </div>
+    <br/>
+    <div>
+        <textarea id="inputValue" rows="12" cols="50"></textarea>
+        <br/>
+        <br/>
+    </div>
+    <div>
+        <button id="runModelButton">Run TensorFlow Model</button>
+    </div>
+    <br/>
+    
+    <div id="output"></div>
+    
+    <div id="status">Status: Waiting for input</div>
+    <br/>
+    <div id="textSummary"></div>
+    <br/>    
+    <div id="textComplexity"></div>
+ 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+ <script src="script.js"></script>
+</body>
+</html>
