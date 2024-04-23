@@ -9,6 +9,10 @@
  * - Ensures that the text is sent correctly with the proper message structure.
  * - Verifies that errors in the chrome.runtime.sendMessage function are handled gracefully.
  */
+const contentScript = require('../contentScript');
+global.chrome = require('sinon-chrome/runtime');
+const jsdom = require('jsdom');
+const setup = require('../setup.js');
 
 describe('sendTextForAnalysis', () => {
   beforeEach(() => {
@@ -36,7 +40,7 @@ describe('sendTextForAnalysis', () => {
 
   it('should send text to the background script for analysis', async () => {
     const text = 'terms of service';
-    await sendTextForAnalysis(text);
+    await contentScript.sendTextForAnalysis(text);
     expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
       action: "analyzeText",
       text: text
@@ -45,7 +49,7 @@ describe('sendTextForAnalysis', () => {
 
   it('should handle errors when sending message fails', async () => {
     const text = 'privacy policy';
-    await sendTextForAnalysis(text);
+    await contentScript.sendTextForAnalysis(text);
     expect(console.error).toHaveBeenCalledWith('Error sending message to background script:', 'Failed to send');
     expect(chrome.runtime.sendMessage).toHaveBeenCalled();
   });
